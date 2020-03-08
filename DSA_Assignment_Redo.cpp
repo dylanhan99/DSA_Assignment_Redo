@@ -1,18 +1,28 @@
 #include "Graph.h"
-#include "File.h"
 #include <iostream>
 using namespace std;
 
 // Variables
-File* Fares, Interchanges, Routes, Stations;
 
 // Functions
-bool initFiles();
 void displayMenu();
 
+double division(int a, int b) {
+    if (b == 0) {
+        throw "Division by zero condition!";
+    }
+    return (a / b);
+}
 
 int main()
 {
+    //try {
+    //    division(5, 0);
+    //    //cout << z << endl;
+    //}
+    //catch (const char* msg) {
+    //    cerr << msg << endl;
+    //}
     Graph* graph = new Graph();
 
     while (true)
@@ -38,13 +48,6 @@ int main()
             continue;
         }
     }
-}
-
-bool initFiles()
-{
-    
-
-    return false;
 }
 
 void displayMenu()

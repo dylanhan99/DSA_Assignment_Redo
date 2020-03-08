@@ -5,6 +5,7 @@ Graph::Graph()
 	Size = 0;
 	for (int i = 0; i < MAX_SIZE; i++)
 		List[i] = NULL;
+	initFiles();
 }
 
 Graph::~Graph()
@@ -25,6 +26,18 @@ int Graph::hash(KeyType key)
 	}
 	return pos %= MAX_SIZE;
 }
+
+bool Graph::initFiles()
+{
+	Fares = new File(PATH_FARES);
+	Interchanges = new File(PATH_INTERCHANGES);
+	Routes = new File("lol"/*PATH_ROUTES*/);
+	Stations = new File(PATH_STATIONS);
+	return true;
+
+	//return false;
+}
+
 
 Graph::Node* Graph::getNode(KeyType key)
 {

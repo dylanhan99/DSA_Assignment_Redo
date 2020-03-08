@@ -4,13 +4,6 @@
 // Total number of chars involved: 26 * 2 Alphabet, 10 Numbers
 static int NUMOF_CHARS = 62;
 
-// Paths
-static string PATH_BASE = "Full\\";
-static string PATH_FARES		= PATH_BASE + "Fares.csv";
-static string PATH_INTERCHANGES = PATH_BASE + "Interchanges.csv";
-static string PATH_ROUTES		= PATH_BASE + "Routes.csv";
-static string PATH_STATIONS		= PATH_BASE + "Stations.csv";
-
 // Convert char to int
 // 0 - 9   Numbers
 // 10 - 35 Uppercase

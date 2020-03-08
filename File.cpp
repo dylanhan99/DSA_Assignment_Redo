@@ -10,6 +10,11 @@ File::File(string path)
 {
 	lines = NULL;
 	this->path = path;
+	try {
+		getLines();
+	} catch (const char* msg) {
+		cerr << msg << path << endl;
+	}
 }
 
 File::~File()
@@ -35,12 +40,17 @@ vector<string>* File::getLines()
 	fstream file(path);
 	if (isFileExist(file))
 	{
+		cout << path << endl;
 		lines = new vector<string>();
 
 		for (string line; getline(file, line);)
 			lines->push_back(line);
 
 		file.close();
+	}
+	else
+	{
+		throw ("Failed to open file: ");
 	}
 	return lines;
 }

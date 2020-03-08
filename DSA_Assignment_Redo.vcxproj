@@ -150,11 +150,13 @@
     <ClCompile Include="DSA_Assignment_Redo.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="Station.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="File.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Station.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

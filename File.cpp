@@ -3,6 +3,7 @@
 File::File()
 {
 	lines = NULL;
+	this->path = "";
 }
 
 File::File(string path)
@@ -13,7 +14,7 @@ File::File(string path)
 
 File::~File()
 {
-
+	delete this;
 }
 
 bool File::isFileExist(fstream& file)

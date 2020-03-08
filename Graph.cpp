@@ -27,15 +27,12 @@ int Graph::hash(KeyType key)
 	return pos %= MAX_SIZE;
 }
 
-bool Graph::initFiles()
+void Graph::initFiles()
 {
 	Fares = new File(PATH_FARES);
 	Interchanges = new File(PATH_INTERCHANGES);
 	Routes = new File(PATH_ROUTES);
 	Stations = new File(PATH_STATIONS);
-	return true;
-
-	//return false;
 }
 
 

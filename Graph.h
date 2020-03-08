@@ -1,16 +1,19 @@
 #pragma once
 
-#include "Globals.h"
 #include "File.h"
-#include "Station.h"
-#include <string>
+#include "Line.h"
+
 #include <iostream>
+#include <string>
+#include <vector>
+
 using namespace std;
+
+typedef string KeyType;
+typedef Line ItemType;
 
 // This graph will make use of Hash table
 // The hash function makes use of Horner's rule
-typedef string KeyType;
-typedef Station ItemType;
 
 const int MAX_SIZE = 200;
 
@@ -27,7 +30,7 @@ private:
 	struct Node
 	{
 		KeyType key;
-		ItemType* station;
+		ItemType* line;
 		Node* next;
 	};
 
@@ -41,7 +44,7 @@ public:
 
 	int hash(KeyType key);
 
-	bool initFiles();
+	void initFiles();
 
 	Node* getNode(KeyType key);
 

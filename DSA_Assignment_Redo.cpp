@@ -1,18 +1,20 @@
+#include "Globals.h"
 #include "Graph.h"
 #include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
-
 // Variables
 
 // Functions
 void displayMenu();
 
-double division(int a, int b) {
-    if (b == 0) {
-        throw "Division by zero condition!";
-    }
-    return (a / b);
-}
+//double division(int a, int b) {
+//    if (b == 0) {
+//        throw "Division by zero condition!";
+//    }
+//    return (a / b);
+//}
 
 int main()
 {

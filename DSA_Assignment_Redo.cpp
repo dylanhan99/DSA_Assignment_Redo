@@ -27,6 +27,8 @@ int main()
     //}
     Graph* graph = new Graph();
 
+    graph->add("EW23", new Station());
+
     while (true)
     {
         displayMenu();
@@ -43,6 +45,7 @@ int main()
             return 0;
 
         case 1:
+            graph->displayLines();
             continue;
 
         default:

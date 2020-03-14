@@ -1,7 +1,7 @@
 #pragma once
 
 #include "File.h"
-#include "Line.h"
+#include "Station.h"
 
 #include <iostream>
 #include <string>
@@ -9,8 +9,8 @@
 
 using namespace std;
 
-typedef string KeyType;
-typedef Line ItemType;
+//typedef string KeyType;
+typedef Station ItemType;
 
 // This graph will make use of Hash table
 // The hash function makes use of Horner's rule
@@ -29,9 +29,9 @@ class Graph
 private:
 	struct Node
 	{
-		KeyType key;
-		ItemType* line;
-		Node* next;
+		KeyType Key;
+		ItemType* Station;
+		Node* Next;
 	};
 
 	Node* List[MAX_SIZE];
@@ -42,18 +42,24 @@ public:
 	Graph();
 	~Graph();
 
-	int hash(KeyType key);
+	//int hash(KeyType key);
 
 	void initFiles();
 
 	Node* getNode(KeyType key);
 
-	bool add(KeyType key, ItemType item);
+	bool add(KeyType key, ItemType* item);
 	
 	bool remove(KeyType key);
 
 	bool search(KeyType key);
 
 	bool displayLines();
+
+	bool displayStations(string prefix);
+
+	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
+
+	bool isEmpty();
 };
 

@@ -30,11 +30,12 @@ bool File::isFileExist(fstream& file)
 }
 
 
-#pragma region Read Files
+#pragma region General Functions
+
 // Read each line of file and 
 vector<string>* File::getLines()
 {
-	delete(lines);
+	//delete(lines);
 	lines = NULL;
 
 	fstream file(path);
@@ -54,9 +55,7 @@ vector<string>* File::getLines()
 	}
 	return lines;
 }
-#pragma endregion
 
-#pragma region Write Files
 // Write line to eof
 bool File::writeFile(string line)
 {
@@ -88,4 +87,3 @@ bool File::writeFile(string line, int index)
 	}
 	return false;
 }
-#pragma endregion

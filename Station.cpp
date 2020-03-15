@@ -13,10 +13,11 @@ Station::~Station()
 	delete this;
 }
 
-Station::Station(string name, string id)
+Station::Station(string name, string id, int dist)
 {
 	this->StationName = name;
 	this->StationID = id;
+	this->DistToNext = dist;
 	Connections = NULL;
 	InterchangeStations = NULL;
 }

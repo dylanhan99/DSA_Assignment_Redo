@@ -79,7 +79,7 @@ bool Graph::remove(KeyType key)
 		Node* PreviousNode = CurrentNode;
 		while (CurrentNode->Next != NULL)
 		{
-			//if(PreviousNode->Key)
+			//  if(PreviousNode->Key)
 		}
 		return true;
 	}
@@ -189,5 +189,44 @@ bool Graph::isEmpty()
 {
 	if (Size <= 0)
 		return true;
+	return false;
+}
+
+bool Graph::setupStations()
+{
+	// Loop through each station in Stations.csv 
+	vector<string>* StationsLines = Stations->getLines();
+	if (StationsLines != NULL)
+	{
+		for (int i = 0; i < StationsLines->size(); i++)
+		{
+			vector<string> CurrentStr = *Split(StationsLines->at(i), ',');
+			vector<string> StationIDs, Distances;
+			if (findPrefixInRoutes(GetLine(CurrentStr.front()), StationIDs, Distances))
+			{
+				// Loop through the Station IDs to find the Distance
+				for (int j = 0; j < StationIDs.size(); j++)
+				{
+					if (j == Distances.size())
+					{
+						int Dist = 0;
+						if (j < Distances.size())
+							Dist = stoi(Distances.at(j));
+
+						//int Dist = stoi(Distances.at(j));
+						Station* newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
+						break;
+					}
+				}
+			}
+
+			// Setup Interchanges. Check Interchanges.csv for related stations. After taht, if the Station object exists
+			// for that station alr, Add that object to newStation.InterchangeStations. Once that is done, update the InterchangeStations 
+			// for each Station in newStation.InterchangeStations
+
+			// Once interchanges is done, setup connections.
+		}
+		return true;
+	}
 	return false;
 }

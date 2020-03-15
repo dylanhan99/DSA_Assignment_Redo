@@ -61,5 +61,7 @@ public:
 	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
 
 	bool isEmpty();
+
+	bool setupStations();
 };
 

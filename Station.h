@@ -20,9 +20,9 @@ public:
 	Station();
 	~Station();
 
-	Station(string name, string id);
+	Station(string name, string id, int dist);
 
-	// Can assume that connections are +-1 of current station 
+	// Make use of Routes.csv to find out which are the stations next to this
 	// e.g.EW24 connections would be EW23 and EW25
 	void setupConnections();
 

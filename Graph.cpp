@@ -202,6 +202,7 @@ bool Graph::setupStations()
 		{
 			vector<string> CurrentStr = *Split(StationsLines->at(i), ',');
 			vector<string> StationIDs, Distances;
+			Station* newStation = NULL;
 			if (findPrefixInRoutes(GetLine(CurrentStr.front()), StationIDs, Distances))
 			{
 				// Loop through the Station IDs to find the Distance
@@ -214,19 +215,49 @@ bool Graph::setupStations()
 							Dist = stoi(Distances.at(j));
 
 						//int Dist = stoi(Distances.at(j));
-						Station* newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
+						newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
 						break;
 					}
 				}
 			}
-
-			// Setup Interchanges. Check Interchanges.csv for related stations. After taht, if the Station object exists
-			// for that station alr, Add that object to newStation.InterchangeStations. Once that is done, update the InterchangeStations 
-			// for each Station in newStation.InterchangeStations
-
-			// Once interchanges is done, setup connections.
 		}
+			
+		// Once interchanges is done, setup connections.
 		return true;
+	}
+	
+	return false;
+}
+
+bool Graph::setupConnections(string StationName)
+{
+	if (isInterchange(StationName))
+	{
+
+	}
+	else
+	{
+
+	}
+	return false;
+}
+
+bool Graph::isInterchange(string StationName)
+{
+	int index = Hash(StationName, MAX_SIZE);
+	Node* CurrentNode = List[index];
+	if (CurrentNode != NULL)
+	{
+		int Count = 0;
+		while (CurrentNode->Next != NULL)
+		{
+			if (CurrentNode->Station->getStationName() == StationName)
+			{
+				Count++;
+				if (Count > 1)
+					return true;
+			}
+		}
 	}
 	return false;
 }

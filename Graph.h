@@ -63,5 +63,9 @@ public:
 	bool isEmpty();
 
 	bool setupStations();
+
+	bool setupConnections(string StationName);
+
+	bool isInterchange(string StationID);
 };
 

@@ -27,7 +27,7 @@ int main()
     //}
     Graph* graph = new Graph();
 
-    graph->add("EW23", new Station());
+    graph->setupStations();
 
     while (true)
     {

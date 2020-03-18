@@ -22,24 +22,6 @@ Station::Station(string name, string id, int dist)
 	//InterchangeStations = NULL;
 }
 
-void Station::setupConnections()
-{
-	int id = stoi(GetNum(this->StationID));
-	if (id <= 0)
-	{
-		string s = GetLine(StationID) + to_string(id + 1);
-		Connections->push_back(s);
-	}
-	else
-	{
-		string s = GetLine(StationID) + to_string(id + 1);
-		Connections->push_back(s);
-		s = GetLine(StationID) + to_string(id - 1);
-		Connections->push_back(s);
-	}
-	//Connections->push_back()
-}
-
 string Station::getStationName()
 {
 	return StationName;
@@ -59,8 +41,3 @@ vector<string>* Station::getConnections()
 {
 	return Connections;
 }
-
-//vector<Station*>* Station::getInterchangeStations()
-//{
-//	return InterchangeStations;
-//}

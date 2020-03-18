@@ -22,16 +22,11 @@ public:
 
 	Station(string name, string id, int dist);
 
-	// Make use of Routes.csv to find out which are the stations next to this
-	// e.g.EW24 connections would be EW23 and EW25
-	void setupConnections();
-
 	string getStationName();
 	string getStationID();
 	int getDistToNext();
 
 	vector<string>* getConnections();
-	//vector<Station*>* getInterchangeStations();
 
 };
 

@@ -52,6 +52,7 @@ bool Graph::add(KeyType key, ItemType* item)
 	if (isEmpty())
 	{
 		List[index] = NewNode;
+		Size++;
 		return true;
 	}
 	else
@@ -65,6 +66,7 @@ bool Graph::add(KeyType key, ItemType* item)
 				CurrentNode = CurrentNode->Next;
 			CurrentNode->Next = NewNode;
 		}
+		Size++;
 		return true;
 	}
 	return false;
@@ -208,21 +210,23 @@ bool Graph::setupStations()
 				// Loop through the Station IDs to find the Distance
 				for (int j = 0; j < StationIDs.size(); j++)
 				{
-					if (j == Distances.size())
-					{
-						int Dist = 0;
-						if (j < Distances.size())
-							Dist = stoi(Distances.at(j));
+					//if (j == Distances.size())
+					//{
+					int Dist = 0;
+					if (j < Distances.size())
+						Dist = stoi(Distances.at(j));
 
-						//int Dist = stoi(Distances.at(j));
-						newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
-						break;
-					}
+					newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
+					this->add(CurrentStr.back(), newStation);
+						
+					break;
+					//}
 				}
 			}
 		}
 			
 		// Once interchanges is done, setup connections.
+		setupConnections("test");
 		return true;
 	}
 	
@@ -231,6 +235,7 @@ bool Graph::setupStations()
 
 bool Graph::setupConnections(string StationName)
 {
+	cout << List[0]->Station->getStationID();
 	if (isInterchange(StationName))
 	{
 

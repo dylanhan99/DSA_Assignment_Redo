@@ -160,6 +160,29 @@ bool Graph::displayStations(string prefix)
 	return false;
 }
 
+bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs)
+{
+	vector<string> RoutesLines = *Routes->getLines();
+	for (int i = 0; i < RoutesLines.size(); i++)
+	{
+		// If the line contains the StationIDs
+		if (i % 2 == 0)
+		{
+			vector<string> StationIDs = *Split(RoutesLines.at(i), ',');
+			vector<string> Distances = *Split(RoutesLines.at(i + 1), ',');
+
+			for (int j = 0; j < StationIDs.size(); j++)
+			{
+				if (GetLine(StationIDs.at(j)) == prefix)
+					retStationIDs.push_back(StationIDs.at(j));
+			}
+		}
+	}
+	if (retStationIDs.size() <= 0)
+		return false;
+	return true;
+}
+
 bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs, vector<string>& retDistances)
 {
 	vector<string> RoutesLines = *Routes->getLines();
@@ -222,27 +245,96 @@ bool Graph::setupStations()
 					break;
 					//}
 				}
+			
+				// Once interchanges is done, setup connections.
+				//setupConnections("test");
+				//function should be claled after ALL station objects have been created
+				setupConnections(newStation);
 			}
 		}
-			
-		// Once interchanges is done, setup connections.
-		setupConnections("test");
 		return true;
 	}
 	
 	return false;
 }
 
-bool Graph::setupConnections(string StationName)
+bool Graph::setupConnections(Station* station/*, string StationID, string StationName*/)
 {
-	cout << List[0]->Station->getStationID();
-	if (isInterchange(StationName))
+	if (isExist(station->getStationName()))
 	{
+		// If is interchange, 
+		// For each Node* at List[index] that has key "StationName"
+		// use findPrefixInRoutes() to get the StationIDs. From there, get the pos at which current StationID is at.
+		// the connections would be pos +- 1.
+		int index = Hash(station->getStationName(), MAX_SIZE);
+		Node* CurrentNode = List[index];
+		if (CurrentNode != NULL)
+		{
+			while (CurrentNode != NULL)
+			{
+				if (CurrentNode->Key == station->getStationName())
+				{
+					vector<string> StationIDs;
+					if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
+					{
+						for (int i = 0; i < StationIDs.size(); i++)
+						{
+							if (StationIDs.at(i) == station->getStationID())
+							{
+								vector<string> ConnectionIDs;
+								// StationID is at front,
+								// Connection = i + 1
+								if (i == 0)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i + 1));
+								}
+								// StationID is inbetween first and last,
+								// Connection = i +- 1
+								if (i > 0 && i < StationIDs.size() - 1)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i + 1));
+									ConnectionIDs.push_back(StationIDs.at(i - 1));
 
+								}
+								//StationID is last,
+								// Connection = i - 1
+								if (i == StationIDs.size() - 1)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i - 1));
+								}
+
+								if (ConnectionIDs.size() > 0)
+								{
+									// ADD CONNECTIONS TO STATION OBJECT
+
+									for(int j = 0; j < ConnectionIDs.size(); j++)
+										station->getConnections()->push_back(ConnectionIDs.at(i));
+								}
+
+								break;
+							}
+						}
+					}
+				}
+
+				CurrentNode = CurrentNode->Next;
+			}
+			cout << endl;
+			return true;
+		}
 	}
-	else
-	{
+	return false;
+}
 
+bool Graph::isExist(KeyType key)
+{
+	int index = Hash(key, MAX_SIZE);
+	Node* CurrentNode = List[index];
+	while (CurrentNode != NULL)
+	{
+		if (CurrentNode->Key == key)
+			return true;
+		CurrentNode = CurrentNode->Next;
 	}
 	return false;
 }
@@ -265,4 +357,44 @@ bool Graph::isInterchange(string StationName)
 		}
 	}
 	return false;
+}
+
+// Use station name to get station id
+// Makes use of Stations.csv
+//string findStationID(string StationName)
+//{
+//	vector<string>* StationsLines = Stations->getLines();
+//	if (StationsLines != NULL)
+//	{
+//		for (int i = 0; i < StationsLines->size(); i++)
+//		{
+//			string CurrentStr = StationsLines->at(i);
+//			vector<string> splt = *Split(CurrentStr, ',');
+//			if (splt.back() == StationName)
+//			{
+//				return splt.return();
+//			}
+//		}
+//	}
+//	return "";
+//}
+
+// Use station ID to get station name 
+// Makes use of Stations.csv
+string Graph::findStationName(string StationID)
+{
+	vector<string>* StationsLines = Stations->getLines();
+	if (StationsLines != NULL)
+	{
+		for (int i = 0; i < StationsLines->size(); i++)
+		{
+			string CurrentStr = StationsLines->at(i);
+			vector<string> splt = *Split(CurrentStr, ',');
+			if (splt.front() == StationID)
+			{
+				return splt.back();
+			}
+		}
+	}
+	return "";
 }

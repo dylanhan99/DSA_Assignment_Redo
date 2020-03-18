@@ -41,7 +41,7 @@ vector<string>* File::getLines()
 	fstream file(path);
 	if (isFileExist(file))
 	{
-		cout << path << endl;
+		//cout << path << endl;
 		lines = new vector<string>();
 
 		for (string line; getline(file, line);)

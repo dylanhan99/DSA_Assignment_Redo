@@ -58,14 +58,21 @@ public:
 
 	bool displayStations(string prefix);
 
+	bool findPrefixInRoutes(string prefix, vector<string>& retStationIDs);
+
 	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
 
 	bool isEmpty();
 
 	bool setupStations();
 
-	bool setupConnections(string StationName);
+	bool setupConnections(Station* station/*, string StationID, string StationName*/);
+
+	bool isExist(KeyType key);
 
 	bool isInterchange(string StationID);
+
+	//string findStationID(string StationName);
+	string findStationName(string StationID);
 };
 

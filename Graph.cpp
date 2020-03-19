@@ -308,7 +308,7 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 									// ADD CONNECTIONS TO STATION OBJECT
 
 									for(int j = 0; j < ConnectionIDs.size(); j++)
-										station->getConnections()->push_back(ConnectionIDs.at(i));
+										station->getConnections()->push_back(ConnectionIDs.at(j));
 								}
 
 								break;
@@ -319,7 +319,6 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 
 				CurrentNode = CurrentNode->Next;
 			}
-			cout << endl;
 			return true;
 		}
 	}

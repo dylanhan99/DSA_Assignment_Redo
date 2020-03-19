@@ -270,17 +270,24 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 		Node* CurrentNode = List[index];
 		if (CurrentNode != NULL)
 		{
+			// Looping through each node in link list...
 			while (CurrentNode != NULL)
 			{
+				// If the name of the node is what im looking for,
 				if (CurrentNode->Key == station->getStationName())
 				{
+					// Get the list of StationIDs from routes.csv with the corresponding line prefix
 					vector<string> StationIDs;
 					if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
 					{
+						// For each StationID from the list of StationIDs,
 						for (int i = 0; i < StationIDs.size(); i++)
 						{
+							// If the StationID is what im looking for,
 							if (StationIDs.at(i) == station->getStationID())
 							{
+								// Check the position of the StationID to get the connections.
+
 								vector<string> ConnectionIDs;
 								// StationID is at front,
 								// Connection = i + 1
@@ -307,8 +314,11 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 								{
 									// ADD CONNECTIONS TO STATION OBJECT
 
-									for(int j = 0; j < ConnectionIDs.size(); j++)
-										station->getConnections()->push_back(ConnectionIDs.at(j));
+									for (int j = 0; j < ConnectionIDs.size(); j++)
+									{
+										if(!isInVec(*station->getConnections(), ConnectionIDs.at(j)))
+											station->getConnections()->push_back(ConnectionIDs.at(j));
+									}
 								}
 
 								break;
@@ -316,7 +326,6 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 						}
 					}
 				}
-
 				CurrentNode = CurrentNode->Next;
 			}
 			return true;

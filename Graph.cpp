@@ -316,11 +316,10 @@ bool Graph::setupConnections(Station* station/*, string StationID, string Statio
 
 									for (int j = 0; j < ConnectionIDs.size(); j++)
 									{
-										if(!isInVec(*station->getConnections(), ConnectionIDs.at(j)))
+										if(!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
 											station->getConnections()->push_back(ConnectionIDs.at(j));
 									}
 								}
-
 								break;
 							}
 						}

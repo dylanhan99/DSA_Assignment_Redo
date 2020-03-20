@@ -26,7 +26,6 @@ int main()
     //    cerr << msg << endl;
     //}
     Graph* graph = new Graph();
-
     graph->setupStations();
 
     while (true)

@@ -127,6 +127,7 @@ bool Graph::displayLines()
 		int option;
 		cout << "Line: ";
 		cin >> option;
+		cout << endl;
 
 		// If within rage of LinePrefixes vector
 		if (!(option < 1 || option > LinePrefixes.size()))
@@ -141,20 +142,46 @@ bool Graph::displayLines()
 
 bool Graph::displayStations(string prefix)
 {
+	/*
+	For each StationID in routes, get the station name. 
+		Use the station name to get the Index in list.
+		For each item at the index, 
+			if the Station ID is current,
+				Display information of that Station.
+	*/
+
+
 	vector<string> StationIDs, Distances;
 	if (findPrefixInRoutes(prefix, StationIDs, Distances))
 	{
 		cout << "Stations under " << prefix << " line:" << endl;
 		cout << "=============================" << endl;
+		cout << "ID" << "\t" << "Name" << "\t\t" << "Dist to Next(m)" << endl;
 		for (int i = 0; i < StationIDs.size(); i++)
 		{
-			if (i == Distances.size()) 
+			string StationName = findStationName(StationIDs.at(i));
+			if (StationName != "")
 			{
-				cout << StationIDs.at(i) << " " << endl;
-				continue;
+				if (i == Distances.size())
+				{
+					if (StationName.size() < 8)
+					{
+						cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
+						continue;
+					}
+					cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
+					continue;
+				}
+				if (StationName.size() < 8)
+				{
+					cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
+					continue;
+				}
+				cout << StationIDs.at(i) << "\t" << StationName << "\t" << Distances.at(i) << endl;
+				//cout << StationIDs.at(i) << " " << Distances.at(i) << endl;
 			}
-			cout << StationIDs.at(i) << " " << Distances.at(i) << endl;
 		}
+		//cout << "ID" << "\t" << "1234567" << "\t" << "1000" << endl;
 		return true;
 	}
 	return false;
@@ -254,7 +281,6 @@ bool Graph::setupStations()
 		}
 		return true;
 	}
-	
 	return false;
 }
 

@@ -18,7 +18,7 @@ typedef Station ItemType;
 const int MAX_SIZE = 200;
 
 // Paths
-static const string PATH_BASE = "Full\\";
+static const string PATH_BASE = "Demo\\";
 static const string PATH_FARES = PATH_BASE + "Fares.csv";
 static const string PATH_INTERCHANGES = PATH_BASE + "Interchanges.csv";
 static const string PATH_ROUTES = PATH_BASE + "Routes.csv";

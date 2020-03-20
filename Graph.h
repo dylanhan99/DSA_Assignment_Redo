@@ -18,7 +18,7 @@ typedef Station ItemType;
 const int MAX_SIZE = 200;
 
 // Paths
-static const string PATH_BASE = "Demo\\";
+static const string PATH_BASE = "Demo\\"; /// Full or Demo
 static const string PATH_FARES = PATH_BASE + "Fares.csv";
 static const string PATH_INTERCHANGES = PATH_BASE + "Interchanges.csv";
 static const string PATH_ROUTES = PATH_BASE + "Routes.csv";
@@ -42,37 +42,27 @@ public:
 	Graph();
 	~Graph();
 
-	//int hash(KeyType key);
-
-	void initFiles();
-
 	Node* getNode(KeyType key);
 
+	// General functions
 	bool add(KeyType key, ItemType* item);
-	
 	bool remove(KeyType key);
-
 	bool search(KeyType key);
-
-	bool displayLines();
-
-	bool displayStations(string prefix);
-
-	bool findPrefixInRoutes(string prefix, vector<string>& retStationIDs);
-
-	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
-
 	bool isEmpty();
-
-	bool setupStations();
-
-	bool setupConnections(Station* station/*, string StationID, string StationName*/);
-
 	bool isExist(KeyType key);
-
 	bool isInterchange(string StationID);
-
 	//string findStationID(string StationName);
 	string findStationName(string StationID);
+	bool findPrefixInRoutes(string prefix, vector<string>& retStationIDs);
+	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
+
+	// Feature 1: Display lines.
+	bool displayLines();
+	bool displayStations(string prefix);
+	
+	// Setup functions
+	void initFiles();
+	bool setupStations();
+	bool setupConnections(Station* station/*, string StationID, string StationName*/);
 };
 

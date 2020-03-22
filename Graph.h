@@ -44,7 +44,7 @@ public:
 
 	Node* getNode(KeyType key);
 
-	// General functions
+	// General Functions
 	bool add(KeyType key, ItemType* item);
 	bool remove(KeyType key);
 	bool search(KeyType key);
@@ -56,11 +56,11 @@ public:
 	bool findPrefixInRoutes(string prefix, vector<string>& retStationIDs);
 	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
 
-	// Feature 1: Display lines.
+	// Feature 1: Display Lines.
 	bool displayLines();
 	bool displayStations(string prefix);
 	
-	// Setup functions
+	// Setup Functions
 	void initFiles();
 	bool setupStations();
 	bool setupConnections(Station* station/*, string StationID, string StationName*/);

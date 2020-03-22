@@ -47,6 +47,9 @@ int main()
             graph->displayLines();
             continue;
 
+        case 2:
+            continue;
+
         default:
             cout << "Unknown option..." << endl;
             continue;

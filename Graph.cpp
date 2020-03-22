@@ -13,34 +13,12 @@ Graph::~Graph()
 	delete this;
 }
 
-// Horner's hash function
-//int Graph::hash(KeyType key)
-//{
-//	int pos = 0;
-//	for (int i = 0; i < key.length(); i++)
-//	{
-//		int currentChar = charvalue(key[i]);
-//		// isAlphaNumeric
-//		if (currentChar >= 0)
-//			pos += currentChar * NUMOF_CHARS + charvalue(key[i + 1]);
-//	}
-//	return pos %= MAX_SIZE;
-//}
-
-void Graph::initFiles()
-{
-	Fares = new File(PATH_FARES);
-	Interchanges = new File(PATH_INTERCHANGES);
-	Routes = new File(PATH_ROUTES);
-	Stations = new File(PATH_STATIONS);
-}
-
-
 Graph::Node* Graph::getNode(KeyType key)
 {
 	return NULL;
 }
 
+#pragma region General Functions
 // Add new Station into hash table
 bool Graph::add(KeyType key, ItemType* item)
 {
@@ -93,269 +71,10 @@ bool Graph::search(KeyType key)
 	return false;
 }
 
-bool Graph::displayLines()
-{
-	vector<string>* FileLines = Stations->getLines();
-	if (FileLines != NULL)
-	{
-		vector<string> LinePrefixes;
-		for (int i = 0; i < FileLines->size(); i++)
-		{
-			string CurrentStr = FileLines->at(i);
-			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
-
-			if (LinePrefixes.empty())
-				LinePrefixes.push_back(CurrentPrefix);
-			else
-			{
-				for (int i = 0; i < LinePrefixes.size(); i++)
-				{
-					if(!isInVec(LinePrefixes, CurrentPrefix))
-						LinePrefixes.push_back(CurrentPrefix);
-				}
-			}
-		}
-
-		cout << "Select a line to display" << endl;
-		cout << "=============================" << endl;
-		for (int i = 0; i < LinePrefixes.size(); i++)
-		{
-			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
-		}
-		cout << "=============================" << endl;
-
-		int option;
-		cout << "Line: ";
-		cin >> option;
-		cout << endl;
-
-		// If within rage of LinePrefixes vector
-		if (!(option < 1 || option > LinePrefixes.size()))
-		{
-			displayStations(LinePrefixes.at(option - 1));
-
-			return true;
-		}
-	}
-	return false;
-}
-
-bool Graph::displayStations(string prefix)
-{
-	/*
-	For each StationID in routes, get the station name. 
-		Use the station name to get the Index in list.
-		For each item at the index, 
-			if the Station ID is current,
-				Display information of that Station.
-	*/
-
-
-	vector<string> StationIDs, Distances;
-	if (findPrefixInRoutes(prefix, StationIDs, Distances))
-	{
-		cout << "Stations under " << prefix << " line:" << endl;
-		cout << "=============================" << endl;
-		cout << "ID" << "\t" << "Name" << "\t\t" << "Dist to Next(m)" << endl;
-		for (int i = 0; i < StationIDs.size(); i++)
-		{
-			string StationName = findStationName(StationIDs.at(i));
-			if (StationName != "")
-			{
-				if (i == Distances.size())
-				{
-					if (StationName.size() < 8)
-					{
-						cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
-						continue;
-					}
-					cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
-					continue;
-				}
-				if (StationName.size() < 8)
-				{
-					cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
-					continue;
-				}
-				cout << StationIDs.at(i) << "\t" << StationName << "\t" << Distances.at(i) << endl;
-				//cout << StationIDs.at(i) << " " << Distances.at(i) << endl;
-			}
-		}
-		//cout << "ID" << "\t" << "1234567" << "\t" << "1000" << endl;
-		return true;
-	}
-	return false;
-}
-
-bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs)
-{
-	vector<string> RoutesLines = *Routes->getLines();
-	for (int i = 0; i < RoutesLines.size(); i++)
-	{
-		// If the line contains the StationIDs
-		if (i % 2 == 0)
-		{
-			vector<string> StationIDs = *Split(RoutesLines.at(i), ',');
-			vector<string> Distances = *Split(RoutesLines.at(i + 1), ',');
-
-			for (int j = 0; j < StationIDs.size(); j++)
-			{
-				if (GetLine(StationIDs.at(j)) == prefix)
-					retStationIDs.push_back(StationIDs.at(j));
-			}
-		}
-	}
-	if (retStationIDs.size() <= 0)
-		return false;
-	return true;
-}
-
-bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs, vector<string>& retDistances)
-{
-	vector<string> RoutesLines = *Routes->getLines();
-	for (int i = 0; i < RoutesLines.size(); i++)
-	{
-		// If the line contains the StationIDs
-		if (i % 2 == 0)
-		{
-			vector<string> StationIDs = *Split(RoutesLines.at(i), ',');
-			vector<string> Distances = *Split(RoutesLines.at(i + 1), ',');
-
-			for (int j = 0; j < StationIDs.size(); j++)
-			{
-				if (GetLine(StationIDs.at(j)) == prefix)
-				{
-					retStationIDs.push_back(StationIDs.at(j));
-					if(j < Distances.size())
-						retDistances.push_back(Distances.at(j));
-				}
-			}
-		}
-	}
-	if (retStationIDs.size() <= 0)
-		return false;
-	return true;
-}
-
 bool Graph::isEmpty()
 {
 	if (Size <= 0)
 		return true;
-	return false;
-}
-
-bool Graph::setupStations()
-{
-	// Loop through each station in Stations.csv 
-	vector<string>* StationsLines = Stations->getLines();
-	if (StationsLines != NULL)
-	{
-		for (int i = 0; i < StationsLines->size(); i++)
-		{
-			vector<string> CurrentStr = *Split(StationsLines->at(i), ',');
-			vector<string> StationIDs, Distances;
-			Station* newStation = NULL;
-			if (findPrefixInRoutes(GetLine(CurrentStr.front()), StationIDs, Distances))
-			{
-				// Loop through the Station IDs to find the Distance
-				for (int j = 0; j < StationIDs.size(); j++)
-				{
-					//if (j == Distances.size())
-					//{
-					int Dist = 0;
-					if (j < Distances.size())
-						Dist = stoi(Distances.at(j));
-
-					newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
-					this->add(CurrentStr.back(), newStation);
-						
-					break;
-					//}
-				}
-			
-				// Once interchanges is done, setup connections.
-				//setupConnections("test");
-				//function should be claled after ALL station objects have been created
-				setupConnections(newStation);
-			}
-		}
-		return true;
-	}
-	return false;
-}
-
-bool Graph::setupConnections(Station* station/*, string StationID, string StationName*/)
-{
-	if (isExist(station->getStationName()))
-	{
-		// If is interchange, 
-		// For each Node* at List[index] that has key "StationName"
-		// use findPrefixInRoutes() to get the StationIDs. From there, get the pos at which current StationID is at.
-		// the connections would be pos +- 1.
-		int index = Hash(station->getStationName(), MAX_SIZE);
-		Node* CurrentNode = List[index];
-		if (CurrentNode != NULL)
-		{
-			// Looping through each node in link list...
-			while (CurrentNode != NULL)
-			{
-				// If the name of the node is what im looking for,
-				if (CurrentNode->Key == station->getStationName())
-				{
-					// Get the list of StationIDs from routes.csv with the corresponding line prefix
-					vector<string> StationIDs;
-					if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
-					{
-						// For each StationID from the list of StationIDs,
-						for (int i = 0; i < StationIDs.size(); i++)
-						{
-							// If the StationID is what im looking for,
-							if (StationIDs.at(i) == station->getStationID())
-							{
-								// Check the position of the StationID to get the connections.
-
-								vector<string> ConnectionIDs;
-								// StationID is at front,
-								// Connection = i + 1
-								if (i == 0)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i + 1));
-								}
-								// StationID is inbetween first and last,
-								// Connection = i +- 1
-								if (i > 0 && i < StationIDs.size() - 1)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i + 1));
-									ConnectionIDs.push_back(StationIDs.at(i - 1));
-
-								}
-								//StationID is last,
-								// Connection = i - 1
-								if (i == StationIDs.size() - 1)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i - 1));
-								}
-
-								if (ConnectionIDs.size() > 0)
-								{
-									// ADD CONNECTIONS TO STATION OBJECT
-
-									for (int j = 0; j < ConnectionIDs.size(); j++)
-									{
-										if(!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
-											station->getConnections()->push_back(ConnectionIDs.at(j));
-									}
-								}
-								break;
-							}
-						}
-					}
-				}
-				CurrentNode = CurrentNode->Next;
-			}
-			return true;
-		}
-	}
 	return false;
 }
 
@@ -431,3 +150,278 @@ string Graph::findStationName(string StationID)
 	}
 	return "";
 }
+
+bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs)
+{
+	vector<string> RoutesLines = *Routes->getLines();
+	for (int i = 0; i < RoutesLines.size(); i++)
+	{
+		// If the line contains the StationIDs
+		if (i % 2 == 0)
+		{
+			vector<string> StationIDs = *Split(RoutesLines.at(i), ',');
+			vector<string> Distances = *Split(RoutesLines.at(i + 1), ',');
+
+			for (int j = 0; j < StationIDs.size(); j++)
+			{
+				if (GetLine(StationIDs.at(j)) == prefix)
+					retStationIDs.push_back(StationIDs.at(j));
+			}
+		}
+	}
+	if (retStationIDs.size() <= 0)
+		return false;
+	return true;
+}
+
+bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs, vector<string>& retDistances)
+{
+	vector<string> RoutesLines = *Routes->getLines();
+	for (int i = 0; i < RoutesLines.size(); i++)
+	{
+		// If the line contains the StationIDs
+		if (i % 2 == 0)
+		{
+			vector<string> StationIDs = *Split(RoutesLines.at(i), ',');
+			vector<string> Distances = *Split(RoutesLines.at(i + 1), ',');
+
+			for (int j = 0; j < StationIDs.size(); j++)
+			{
+				if (GetLine(StationIDs.at(j)) == prefix)
+				{
+					retStationIDs.push_back(StationIDs.at(j));
+					if (j < Distances.size())
+						retDistances.push_back(Distances.at(j));
+				}
+			}
+		}
+	}
+	if (retStationIDs.size() <= 0)
+		return false;
+	return true;
+}
+#pragma endregion
+
+
+#pragma region Feature 1: Display Lines.
+bool Graph::displayLines()
+{
+	vector<string>* FileLines = Stations->getLines();
+	if (FileLines != NULL)
+	{
+		vector<string> LinePrefixes;
+		for (int i = 0; i < FileLines->size(); i++)
+		{
+			string CurrentStr = FileLines->at(i);
+			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
+
+			if (LinePrefixes.empty())
+				LinePrefixes.push_back(CurrentPrefix);
+			else
+			{
+				for (int i = 0; i < LinePrefixes.size(); i++)
+				{
+					if (!isInVec(LinePrefixes, CurrentPrefix))
+						LinePrefixes.push_back(CurrentPrefix);
+				}
+			}
+		}
+
+		cout << "Select a line to display" << endl;
+		cout << "=============================" << endl;
+		for (int i = 0; i < LinePrefixes.size(); i++)
+		{
+			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
+		}
+		cout << "=============================" << endl;
+
+		int option;
+		cout << "Line: ";
+		cin >> option;
+		cout << endl;
+
+		// If within rage of LinePrefixes vector
+		if (!(option < 1 || option > LinePrefixes.size()))
+		{
+			displayStations(LinePrefixes.at(option - 1));
+
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Graph::displayStations(string prefix)
+{
+	/*
+	For each StationID in routes, get the station name.
+		Use the station name to get the Index in list.
+		For each item at the index,
+			if the Station ID is current,
+				Display information of that Station.
+	*/
+
+
+	vector<string> StationIDs, Distances;
+	if (findPrefixInRoutes(prefix, StationIDs, Distances))
+	{
+		cout << "Stations under " << prefix << " line:" << endl;
+		cout << "=============================" << endl;
+		cout << "ID" << "\t" << "Name" << "\t\t" << "Dist to Next(m)" << endl;
+		for (int i = 0; i < StationIDs.size(); i++)
+		{
+			string StationName = findStationName(StationIDs.at(i));
+			if (StationName != "")
+			{
+				if (i == Distances.size())
+				{
+					if (StationName.size() < 8)
+					{
+						cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
+						continue;
+					}
+					cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
+					continue;
+				}
+				if (StationName.size() < 8)
+				{
+					cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
+					continue;
+				}
+				cout << StationIDs.at(i) << "\t" << StationName << "\t" << Distances.at(i) << endl;
+				//cout << StationIDs.at(i) << " " << Distances.at(i) << endl;
+			}
+		}
+		//cout << "ID" << "\t" << "1234567" << "\t" << "1000" << endl;
+		return true;
+	}
+	return false;
+}
+#pragma endregion
+
+
+#pragma region Setup Functions
+void Graph::initFiles()
+{
+	Fares = new File(PATH_FARES);
+	Interchanges = new File(PATH_INTERCHANGES);
+	Routes = new File(PATH_ROUTES);
+	Stations = new File(PATH_STATIONS);
+}
+
+
+bool Graph::setupStations()
+{
+	// Loop through each station in Stations.csv 
+	vector<string>* StationsLines = Stations->getLines();
+	if (StationsLines != NULL)
+	{
+		for (int i = 0; i < StationsLines->size(); i++)
+		{
+			vector<string> CurrentStr = *Split(StationsLines->at(i), ',');
+			vector<string> StationIDs, Distances;
+			Station* newStation = NULL;
+			if (findPrefixInRoutes(GetLine(CurrentStr.front()), StationIDs, Distances))
+			{
+				// Loop through the Station IDs to find the Distance
+				for (int j = 0; j < StationIDs.size(); j++)
+				{
+					//if (j == Distances.size())
+					//{
+					int Dist = 0;
+					if (j < Distances.size())
+						Dist = stoi(Distances.at(j));
+
+					newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
+					this->add(CurrentStr.back(), newStation);
+
+					break;
+					//}
+				}
+
+				// Once interchanges is done, setup connections.
+				//setupConnections("test");
+				//function should be claled after ALL station objects have been created
+				setupConnections(newStation);
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool Graph::setupConnections(Station* station/*, string StationID, string StationName*/)
+{
+	if (isExist(station->getStationName()))
+	{
+		// If is interchange, 
+		// For each Node* at List[index] that has key "StationName"
+		// use findPrefixInRoutes() to get the StationIDs. From there, get the pos at which current StationID is at.
+		// the connections would be pos +- 1.
+		int index = Hash(station->getStationName(), MAX_SIZE);
+		Node* CurrentNode = List[index];
+		if (CurrentNode != NULL)
+		{
+			// Looping through each node in link list...
+			while (CurrentNode != NULL)
+			{
+				// If the name of the node is what im looking for,
+				if (CurrentNode->Key == station->getStationName())
+				{
+					// Get the list of StationIDs from routes.csv with the corresponding line prefix
+					vector<string> StationIDs;
+					if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
+					{
+						// For each StationID from the list of StationIDs,
+						for (int i = 0; i < StationIDs.size(); i++)
+						{
+							// If the StationID is what im looking for,
+							if (StationIDs.at(i) == station->getStationID())
+							{
+								// Check the position of the StationID to get the connections.
+
+								vector<string> ConnectionIDs;
+								// StationID is at front,
+								// Connection = i + 1
+								if (i == 0)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i + 1));
+								}
+								// StationID is inbetween first and last,
+								// Connection = i +- 1
+								if (i > 0 && i < StationIDs.size() - 1)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i + 1));
+									ConnectionIDs.push_back(StationIDs.at(i - 1));
+
+								}
+								//StationID is last,
+								// Connection = i - 1
+								if (i == StationIDs.size() - 1)
+								{
+									ConnectionIDs.push_back(StationIDs.at(i - 1));
+								}
+
+								if (ConnectionIDs.size() > 0)
+								{
+									// ADD CONNECTIONS TO STATION OBJECT
+
+									for (int j = 0; j < ConnectionIDs.size(); j++)
+									{
+										if (!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
+											station->getConnections()->push_back(ConnectionIDs.at(j));
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+				CurrentNode = CurrentNode->Next;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+#pragma endregion

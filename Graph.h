@@ -59,6 +59,9 @@ public:
 	// Feature 1: Display Lines.
 	bool displayLines();
 	bool displayStations(string prefix);
+
+	// Feature 2: Display Station Info.
+	bool displayStationInfo();
 	
 	// Setup Functions
 	void initFiles();

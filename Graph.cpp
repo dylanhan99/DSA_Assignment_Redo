@@ -243,9 +243,8 @@ bool Graph::displayLines()
 		// If within rage of LinePrefixes vector
 		if (!(option < 1 || option > LinePrefixes.size()))
 		{
-			displayStations(LinePrefixes.at(option - 1));
-
-			return true;
+			if(displayStations(LinePrefixes.at(option - 1)))
+				return true;
 		}
 	}
 	return false;
@@ -267,38 +266,78 @@ bool Graph::displayStations(string prefix)
 	{
 		cout << "Stations under " << prefix << " line:" << endl;
 		cout << "=============================" << endl;
-		cout << "ID" << "\t" << "Name" << "\t\t" << "Dist to Next(m)" << endl;
+		cout << "ID" << "\t" << "Name" /*<< "\t\t" << "Dist to Next(m)"*/ << endl;
 		for (int i = 0; i < StationIDs.size(); i++)
 		{
 			string StationName = findStationName(StationIDs.at(i));
 			if (StationName != "")
 			{
-				if (i == Distances.size())
-				{
-					if (StationName.size() < 8)
-					{
-						cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
-						continue;
-					}
-					cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
-					continue;
-				}
-				if (StationName.size() < 8)
-				{
-					cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
-					continue;
-				}
-				cout << StationIDs.at(i) << "\t" << StationName << "\t" << Distances.at(i) << endl;
-				//cout << StationIDs.at(i) << " " << Distances.at(i) << endl;
+				//if (i == Distances.size())
+				//{
+				//	if (StationName.size() < 8)
+				//	{
+				//		cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
+				//		continue;
+				//	}
+				//	cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
+				//	continue;
+				//}
+				//if (StationName.size() < 8)
+				//{
+				//	cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
+				//	continue;
+				//}
+				cout << StationIDs.at(i) << "\t" << StationName/* << "\t" << Distances.at(i)*/ << endl;
 			}
 		}
-		//cout << "ID" << "\t" << "1234567" << "\t" << "1000" << endl;
+		cout << "=============================" << endl;
 		return true;
 	}
 	return false;
 }
 #pragma endregion
 
+#pragma region Feature 2: Display Station Info.
+bool Graph::displayStationInfo()
+{
+	string StationName;
+	cout << "Enter a station name" << endl;
+	cout << "=============================" << endl;
+	cout << "Name: ";
+	cin >> StationName;
+	cout << "=============================" << endl;
+	cout << endl;
+	StationName = trim(StationName);
+	int index = Hash(StationName, MAX_SIZE);
+
+	Node* CurrentNode = List[index];
+	if (isExist(StationName))
+	{
+		cout << StationName << " Station Info:" << endl;
+		cout << "=============================" << endl;
+		if (isInterchange(StationName))
+			cout << StationName << " is an interchange." << endl;
+		while (CurrentNode != NULL)
+		{
+			if (CurrentNode->Key == StationName)
+			{
+				Station* CurrentStation = CurrentNode->Station;
+				cout << CurrentStation->getStationID() << endl;
+
+				vector<string> Connections = *CurrentStation->getConnections();
+				for (int i = 0; i < Connections.size(); i++)
+				{
+					cout << "\t" << Connections.at(i) << findStationName(Connections.at(i)) << endl;
+				}
+			}
+			CurrentNode = CurrentNode->Next;
+		}
+		cout << "=============================" << endl;
+		return true;
+	}
+	return false;
+}
+#pragma endregion
 
 #pragma region Setup Functions
 void Graph::initFiles()

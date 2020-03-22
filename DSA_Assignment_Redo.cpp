@@ -48,6 +48,7 @@ int main()
             continue;
 
         case 2:
+            graph->displayStationInfo();
             continue;
 
         default:

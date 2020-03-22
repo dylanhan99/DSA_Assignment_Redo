@@ -261,8 +261,8 @@ bool Graph::displayStations(string prefix)
 	*/
 
 
-	vector<string> StationIDs, Distances;
-	if (findPrefixInRoutes(prefix, StationIDs, Distances))
+	vector<string> StationIDs/*, Distances*/;
+	if (findPrefixInRoutes(prefix, StationIDs/*, Distances*/))
 	{
 		cout << "Stations under " << prefix << " line:" << endl;
 		cout << "=============================" << endl;
@@ -298,6 +298,8 @@ bool Graph::displayStations(string prefix)
 #pragma endregion
 
 #pragma region Feature 2: Display Station Info.
+// note to self: display the distances to and from each connection. If it is before, display Connection's distance. 
+// if it is after, display the station's distnace
 bool Graph::displayStationInfo()
 {
 	string StationName;
@@ -325,9 +327,41 @@ bool Graph::displayStationInfo()
 				cout << CurrentStation->getStationID() << endl;
 
 				vector<string> Connections = *CurrentStation->getConnections();
-				for (int i = 0; i < Connections.size(); i++)
+
+				vector<string> StationIDs, Distances;
+				if (findPrefixInRoutes(GetLine(CurrentStation->getStationID()), StationIDs, Distances))
 				{
-					cout << "\t" << Connections.at(i) << findStationName(Connections.at(i)) << endl;
+					for (int i = 0; i < Connections.size(); i++)
+					{
+						for (int j = 0; j < StationIDs.size(); j++)
+						{
+							// isBefore checks the position of CurrentStation's StationID. 
+							// isBefore as in CurrentStation isBefore this one im checking now.
+							// If CurrentStation's StationID comes after the StationID in <vec>StationIDs,
+							//		isBefore will remain false, and will cout the distance of StationID in <vec>StationIDs.
+							// Else
+							//		will cout the distance of CurrentStation
+							bool isBefore = false;
+							if (StationIDs.at(j) == CurrentStation->getStationID())
+								isBefore = true;
+							if (StationIDs.at(j) == Connections.at(i))
+							{
+								// !isBefore - the station ID is lower than CurrentStationID, cout distance of StationID in <vec>StationIDs
+								if (!isBefore)
+								{
+									if (j >= Distances.size() - 1)
+									{
+										cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << "-" << endl;
+										break;
+									}
+									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j) << endl;
+								}
+								else
+									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j - 1) << endl;
+
+							}
+						}
+					}
 				}
 			}
 			CurrentNode = CurrentNode->Next;

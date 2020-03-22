@@ -318,13 +318,14 @@ bool Graph::displayStationInfo()
 		cout << StationName << " Station Info:" << endl;
 		cout << "=============================" << endl;
 		if (isInterchange(StationName))
-			cout << StationName << " is an interchange." << endl;
+			cout << StationName << " is an interchange" << endl;
 		while (CurrentNode != NULL)
 		{
 			if (CurrentNode->Key == StationName)
 			{
 				Station* CurrentStation = CurrentNode->Station;
-				cout << CurrentStation->getStationID() << endl;
+				cout << CurrentStation->getStationID() << "\t" << CurrentStation->getStationName() << endl;
+				cout << "Connections: " << endl;
 
 				vector<string> Connections = *CurrentStation->getConnections();
 
@@ -358,9 +359,10 @@ bool Graph::displayStationInfo()
 								}
 								else
 									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j - 1) << endl;
-
 							}
 						}
+						if (i < Connections.size())
+							cout << "____________________________\n";
 					}
 				}
 			}

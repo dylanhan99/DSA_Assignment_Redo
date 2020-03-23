@@ -247,6 +247,9 @@ bool Graph::displayLines()
 				return true;
 		}
 	}
+	cout << "=============================" << endl;
+	cout << "Unknown option..." << endl;
+	cout << "=============================" << endl;
 	return false;
 }
 
@@ -318,12 +321,13 @@ bool Graph::displayStationInfo()
 		cout << StationName << " Station Info:" << endl;
 		cout << "=============================" << endl;
 		if (isInterchange(StationName))
-			cout << StationName << " is an interchange" << endl;
+			cout << StationName << " is an interchange." << endl;
 		while (CurrentNode != NULL)
 		{
 			if (CurrentNode->Key == StationName)
 			{
 				Station* CurrentStation = CurrentNode->Station;
+				cout << GetLine(CurrentStation->getStationID()) << " Line" << endl;
 				cout << CurrentStation->getStationID() << "\t" << CurrentStation->getStationName() << endl;
 				cout << "Connections: " << endl;
 
@@ -361,8 +365,10 @@ bool Graph::displayStationInfo()
 									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j - 1) << endl;
 							}
 						}
-						if (i < Connections.size())
-							cout << "____________________________\n";
+						if (i + 1 >= Connections.size())
+							cout << endl;
+						//if (i < Connections.size())
+						//	cout << "____________________________\n";
 					}
 				}
 			}
@@ -371,6 +377,9 @@ bool Graph::displayStationInfo()
 		cout << "=============================" << endl;
 		return true;
 	}
+	cout << "=============================" << endl;
+	cout << "No such station: " << StationName << endl;
+	cout << "=============================" << endl;
 	return false;
 }
 #pragma endregion

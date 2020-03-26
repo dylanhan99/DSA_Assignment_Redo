@@ -202,7 +202,6 @@ bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs, vec
 }
 #pragma endregion
 
-
 #pragma region Feature 1: Display Lines.
 bool Graph::displayLines()
 {
@@ -382,6 +381,68 @@ bool Graph::displayStationInfo()
 	cout << "=============================" << endl;
 	return false;
 }
+#pragma endregion
+
+#pragma region Feature 3: Add New Station
+bool Graph::addNewStation()
+{
+	vector<string>* FileLines = Stations->getLines();
+	if (FileLines != NULL)
+	{
+		vector<string> LinePrefixes;
+		for (int i = 0; i < FileLines->size(); i++)
+		{
+			string CurrentStr = FileLines->at(i);
+			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
+
+			if (LinePrefixes.empty())
+				LinePrefixes.push_back(CurrentPrefix);
+			else
+			{
+				for (int i = 0; i < LinePrefixes.size(); i++)
+				{
+					if (!isInVec(LinePrefixes, CurrentPrefix))
+						LinePrefixes.push_back(CurrentPrefix);
+				}
+			}
+		}
+
+		cout << "Select a line to add to" << endl;
+		cout << "=============================" << endl;
+		for (int i = 0; i < LinePrefixes.size(); i++)
+		{
+			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
+		}
+		cout << "=============================" << endl;
+
+		int option;
+		cout << "Line: ";
+		cin >> option;
+		cout << endl;
+
+		// If within rage of LinePrefixes vector
+		if (!(option < 1 || option > LinePrefixes.size()))
+		{
+			if (displayStations(LinePrefixes.at(option - 1)))
+			{
+
+				return true;
+			}
+		}
+		cout << "=============================" << endl;
+		cout << "Unknown option" << endl;
+		cout << "=============================" << endl;
+	}
+	return false;
+}
+#pragma endregion
+
+#pragma region Feature 4: Add New Line
+
+#pragma endregion
+
+#pragma region Feature 5: Find Shortest Route
+
 #pragma endregion
 
 #pragma region Setup Functions

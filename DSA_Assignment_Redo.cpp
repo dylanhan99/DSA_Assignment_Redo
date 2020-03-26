@@ -51,6 +51,10 @@ int main()
             graph->displayStationInfo();
             continue;
 
+        case 3:
+            graph->addNewStation();
+            continue;
+
         default:
             cout << "Unknown option..." << endl;
             continue;

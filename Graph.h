@@ -45,6 +45,7 @@ public:
 	Node* getNode(KeyType key);
 
 	// General Functions
+	// The Add function is used ONLY for setup. Use the AddNewStation() function for NEW stations. It updates files as well.
 	bool add(KeyType key, ItemType* item);
 	bool remove(KeyType key);
 	bool search(KeyType key);
@@ -62,6 +63,13 @@ public:
 
 	// Feature 2: Display Station Info.
 	bool displayStationInfo();
+
+	// Feature 3: Add New Station
+	bool addNewStation();
+
+	// Feature 4: Add New Line
+
+	// Feature 5: Find Shortest Route
 	
 	// Setup Functions
 	void initFiles();

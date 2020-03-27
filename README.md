@@ -1,5 +1,9 @@
 # DSA_Assignment_Redo
-Second attempt of DSA assignment. The first attempt was not very well done.
+Second attempt of DSA assignment. 
+Reasons for redoing:
+- First attempt was rather disappointing
+- To practise better programming habits
+- Familiarisation of C++
 
 Things that could be improved:
 1. Making smaller functions. This would improve the reusability of many functions.

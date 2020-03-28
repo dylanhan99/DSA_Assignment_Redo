@@ -15,7 +15,7 @@ Graph::~Graph()
 
 Graph::Node* Graph::getNode(KeyType key)
 {
-	return NULL;
+	return List[Hash(key, MAX_SIZE)];
 }
 
 #pragma region General Functions
@@ -227,12 +227,12 @@ bool Graph::displayLines()
 		}
 
 		cout << "Select a line to display" << endl;
-		cout << "=============================" << endl;
+		coutEqual();
 		for (int i = 0; i < LinePrefixes.size(); i++)
 		{
 			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
 		}
-		cout << "=============================" << endl;
+		coutEqual();
 
 		int option;
 		cout << "Line: ";
@@ -246,9 +246,9 @@ bool Graph::displayLines()
 				return true;
 		}
 	}
-	cout << "=============================" << endl;
+	coutEqual();
 	cout << "Unknown option..." << endl;
-	cout << "=============================" << endl;
+	coutEqual();
 	return false;
 }
 
@@ -267,7 +267,7 @@ bool Graph::displayStations(string prefix)
 	if (findPrefixInRoutes(prefix, StationIDs/*, Distances*/))
 	{
 		cout << "Stations under " << prefix << " line:" << endl;
-		cout << "=============================" << endl;
+		coutEqual();
 		cout << "ID" << "\t" << "Name" /*<< "\t\t" << "Dist to Next(m)"*/ << endl;
 		for (int i = 0; i < StationIDs.size(); i++)
 		{
@@ -292,7 +292,7 @@ bool Graph::displayStations(string prefix)
 				cout << StationIDs.at(i) << "\t" << StationName/* << "\t" << Distances.at(i)*/ << endl;
 			}
 		}
-		cout << "=============================" << endl;
+		coutEqual();
 		return true;
 	}
 	return false;
@@ -487,7 +487,15 @@ bool Graph::setupStations()
 				// Once interchanges is done, setup connections.
 				//setupConnections("test");
 				//function should be claled after ALL station objects have been created
-				setupConnections(newStation);
+			}
+		}
+		for (int i = 0; i < MAX_SIZE; i++)
+		{
+			Node* CurrentNode = List[i];
+			while (CurrentNode != NULL)
+			{
+				setupConnections(CurrentNode->Station);
+				CurrentNode = CurrentNode->Next;
 			}
 		}
 		return true;
@@ -495,76 +503,97 @@ bool Graph::setupStations()
 	return false;
 }
 
-bool Graph::setupConnections(Station* station/*, string StationID, string StationName*/)
+int RoutesBinary(vector<string> vec, int first, int last, int target)
 {
-	if (isExist(station->getStationName()))
+	if (first <= last)
+	{
+		int mid = (first + last) / 2;
+		int midVal = stoi(GetNum(vec.at(mid)));
+		if (target == midVal)
+			return mid;
+		else if (target < midVal)
+			return RoutesBinary(vec, first, mid - 1, target);
+		else if (target > midVal)
+			return RoutesBinary(vec, mid + 1, last, target);
+	}
+	return -1;
+}
+
+// Setup the connecting stations for a stated Station object.
+bool Graph::setupConnections(Station* station)
+{
+	if (station != NULL)
 	{
 		// If is interchange, 
 		// For each Node* at List[index] that has key "StationName"
 		// use findPrefixInRoutes() to get the StationIDs. From there, get the pos at which current StationID is at.
 		// the connections would be pos +- 1.
-		int index = Hash(station->getStationName(), MAX_SIZE);
-		Node* CurrentNode = List[index];
-		if (CurrentNode != NULL)
+
+		// Get the list of StationIDs from routes.csv with the corresponding line prefix
+		vector<string> StationIDs;
+		if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
 		{
-			// Looping through each node in link list...
-			while (CurrentNode != NULL)
+			// Using binary search to search for the StationID index in the vector.
+			int index = RoutesBinary(StationIDs, 0, StationIDs.size() - 1, 
+									 stoi(GetNum(station->getStationID())));
+			// If index is within range
+			// and the StationID is what im looking for,
+			if ((index >= 0 && index < StationIDs.size()) &&
+				StationIDs.at(index) == station->getStationID())
 			{
-				// If the name of the node is what im looking for,
-				if (CurrentNode->Key == station->getStationName())
+				// Check the position of the StationID to get the connections.
+
+				vector<string> ConnectionIDs;
+				// StationID is at front,
+				// Connection = i + 1
+				if (index == 0)
 				{
-					// Get the list of StationIDs from routes.csv with the corresponding line prefix
-					vector<string> StationIDs;
-					if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
+					ConnectionIDs.push_back(StationIDs.at(index + 1));
+				}
+				// StationID is inbetween first and last,
+				// Connection = i +- 1
+				if (index > 0 && index < StationIDs.size() - 1)
+				{
+					ConnectionIDs.push_back(StationIDs.at(index + 1));
+					ConnectionIDs.push_back(StationIDs.at(index - 1));
+
+				}
+				// StationID is last,
+				// Connection = i - 1
+				if (index == StationIDs.size() - 1)
+				{
+					ConnectionIDs.push_back(StationIDs.at(index - 1));
+				}
+
+				// If there are connections...
+				if (ConnectionIDs.size() > 0)
+				{
+					// ADD CONNECTIONS TO STATION OBJECT
+
+					for (int i = 0; i < ConnectionIDs.size(); i++)
 					{
-						// For each StationID from the list of StationIDs,
-						for (int i = 0; i < StationIDs.size(); i++)
+						//if (!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
+						//	station->getConnections()->push_back(ConnectionIDs.at(j));
+
+						Node* node = getNode(findStationName(GetNum(ConnectionIDs.at(i))));
+						while (node != NULL)
 						{
-							// If the StationID is what im looking for,
-							if (StationIDs.at(i) == station->getStationID())
+							if (node->Station->getStationID() == ConnectionIDs.at(i))
 							{
-								// Check the position of the StationID to get the connections.
-
-								vector<string> ConnectionIDs;
-								// StationID is at front,
-								// Connection = i + 1
-								if (i == 0)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i + 1));
-								}
-								// StationID is inbetween first and last,
-								// Connection = i +- 1
-								if (i > 0 && i < StationIDs.size() - 1)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i + 1));
-									ConnectionIDs.push_back(StationIDs.at(i - 1));
-
-								}
-								//StationID is last,
-								// Connection = i - 1
-								if (i == StationIDs.size() - 1)
-								{
-									ConnectionIDs.push_back(StationIDs.at(i - 1));
-								}
-
-								if (ConnectionIDs.size() > 0)
-								{
-									// ADD CONNECTIONS TO STATION OBJECT
-
-									for (int j = 0; j < ConnectionIDs.size(); j++)
-									{
-										if (!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
-											station->getConnections()->push_back(ConnectionIDs.at(j));
-									}
-								}
+								int IDnum = stoi(GetNum(ConnectionIDs.at(i)));
+								// Is previous 
+								if (IDnum < stoi(GetNum(station->getStationID())))
+									station->PreviousStation = node->Station;
+								// Is next
+								else if (IDnum > stoi(GetNum(station->getStationID())))
+									station->NextStation = node->Station;
 								break;
 							}
 						}
 					}
+					return true;
 				}
-				CurrentNode = CurrentNode->Next;
 			}
-			return true;
 		}
 	}
 	return false;

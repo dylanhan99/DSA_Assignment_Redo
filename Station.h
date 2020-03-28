@@ -26,6 +26,8 @@ public:
 	string getStationID();
 	int getDistToNext();
 
+	Station* PreviousStation, * NextStation;
+
 	vector<string>* getConnections();
 
 };

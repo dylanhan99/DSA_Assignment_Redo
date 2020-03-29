@@ -52,7 +52,7 @@ int main()
             continue;
 
         case 3:
-            //graph->feature3();
+            graph->feature3();
             //graph->setupStations();
             continue;
 

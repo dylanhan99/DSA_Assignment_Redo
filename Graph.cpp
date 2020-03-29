@@ -218,7 +218,16 @@ void Graph::feature1()
 		cin >> option;
 		cout << endl;
 
-		chooseLine(option, LinePrefixes);
+		//chooseLine(option, LinePrefixes);
+		// If within rage of LinePrefixes vector
+		if (!(option < 1 || option > LinePrefixes->size()))
+		{
+			if (displayStations(LinePrefixes->at(option - 1)))
+				return;
+		}
+		coutEqual();
+		cout << "Unknown option..." << endl;
+		coutEqual();
 		return;
 	}
 	coutEqual();
@@ -255,19 +264,6 @@ vector<string>* Graph::displayLines()
 		}
 	}
 	return LinePrefixes;
-}
-
-void Graph::chooseLine(int option, vector<string>* LinePrefixes)
-{
-	// If within rage of LinePrefixes vector
-	if (!(option < 1 || option > LinePrefixes->size()))
-	{
-		if (displayStations(LinePrefixes->at(option - 1)))
-			return;
-	}
-	coutEqual();
-	cout << "Unknown option..." << endl;
-	coutEqual();
 }
 
 bool Graph::displayStations(string prefix)
@@ -362,52 +358,54 @@ bool Graph::displayStationInfo(string StationName)
 #pragma endregion
 
 #pragma region Feature 3: Add New Station
-bool Graph::addNewStation()
+void Graph::feature3()
 {
-	vector<string>* FileLines = Stations->getLines();
-	if (FileLines != NULL)
+	cout << "Select a line to add to" << endl;
+	coutEqual();
+	vector<string>* LinePrefixes = displayLines();
+	coutEqual();
+
+	if (LinePrefixes != NULL)
 	{
-		vector<string> LinePrefixes;
-		for (int i = 0; i < FileLines->size(); i++)
-		{
-			string CurrentStr = FileLines->at(i);
-			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
-
-			if (LinePrefixes.empty())
-				LinePrefixes.push_back(CurrentPrefix);
-			else
-			{
-				for (int i = 0; i < LinePrefixes.size(); i++)
-				{
-					if (!isInVec(LinePrefixes, CurrentPrefix))
-						LinePrefixes.push_back(CurrentPrefix);
-				}
-			}
-		}
-
-		cout << "Select a line to add to" << endl;
-		coutEqual();
-		for (int i = 0; i < LinePrefixes.size(); i++)
-		{
-			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
-		}
-		coutEqual();
-
 		int option;
 		cout << "Line: ";
 		cin >> option;
 		cout << endl;
 
 		// If within rage of LinePrefixes vector
-		if (!(option < 1 || option > LinePrefixes.size()))
+		if (!(option < 1 || option > LinePrefixes->size()))
 		{
-			if (displayStations(LinePrefixes.at(option - 1)))
-				return true;
+			if (displayStations(LinePrefixes->at(option - 1)))
+				return;
 		}
 		coutEqual();
-		cout << "Unknown option" << endl;
+		cout << "Unknown option..." << endl;
 		coutEqual();
+		return;
 	}
+	coutEqual();
+	cout << "Error displaying lines..." << endl;
+	coutEqual();
+}
+
+bool Graph::addNewStation_Choose(ItemType* station)
+{
+	vector<string> StationIDs;
+	if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
+	{
+		// Dosnt exist yet
+		if (RoutesBinary(StationIDs, 0, StationIDs.size() - 1, stoi(GetNum(station->getStationID()))) <= -1)
+		{
+			// add
+			return true;
+		}
+	}
+	delete(station);
+	return false;
+}
+
+bool Graph::addNewStation_Last(ItemType* station)
+{
 	return false;
 }
 #pragma endregion

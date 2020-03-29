@@ -59,7 +59,6 @@ public:
 	// Feature 1: Display Lines.
 	void feature1();
 	vector<string>* displayLines();
-	void chooseLine(int option, vector<string>* LinePrefixes);
 	bool displayStations(string prefix);
 
 	// Feature 2: Display Station Info.
@@ -68,7 +67,8 @@ public:
 
 	// Feature 3: Add New Station
 	void feature3();
-	bool addNewStation();
+	bool addNewStation_Choose(ItemType* station);
+	bool addNewStation_Last(ItemType* station);
 
 	// Feature 4: Add New Line
 

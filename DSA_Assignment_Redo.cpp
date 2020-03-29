@@ -44,7 +44,7 @@ int main()
             return 0;
 
         case 1:
-            graph->displayLines();
+            graph->feature1();
             continue;
 
         case 2:

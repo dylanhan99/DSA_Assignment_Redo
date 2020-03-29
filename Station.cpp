@@ -4,7 +4,6 @@ Station::Station()
 {
 	StationName = "";
 	StationID = "";
-	Connections = new vector<string>();
 }
 
 Station::~Station()
@@ -17,7 +16,8 @@ Station::Station(string name, string id, int dist)
 	this->StationName = name;
 	this->StationID = id;
 	this->DistToNext = dist;
-	Connections = new vector<string>();
+	this->PreviousStation = NULL;
+	this->NextStation = NULL;
 }
 
 string Station::getStationName()
@@ -33,9 +33,4 @@ string Station::getStationID()
 int Station::getDistToNext()
 {
 	return DistToNext;
-}
-
-vector<string>* Station::getConnections()
-{
-	return Connections;
 }

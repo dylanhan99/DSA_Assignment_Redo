@@ -12,7 +12,6 @@ private:
 	string StationName;
 	string StationID;
 	int DistToNext;
-	vector<string>* Connections;
 	//vector<Station*>* InterchangeStations;
 
 public:
@@ -27,8 +26,5 @@ public:
 	int getDistToNext();
 
 	Station* PreviousStation, * NextStation;
-
-	vector<string>* getConnections();
-
 };
 

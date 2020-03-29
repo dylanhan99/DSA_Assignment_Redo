@@ -42,9 +42,8 @@ public:
 	Graph();
 	~Graph();
 
-	Node* getNode(KeyType key);
-
 	// General Functions
+	Node* getNode(KeyType key);
 	// The Add function is used ONLY for setup. Use the AddNewStation() function for NEW stations. It updates files as well.
 	bool add(KeyType key, ItemType* item);
 	bool remove(KeyType key);
@@ -58,13 +57,17 @@ public:
 	bool findPrefixInRoutes(string prefix, vector<string>& Stations, vector<string>& Distances);
 
 	// Feature 1: Display Lines.
-	bool displayLines();
+	void feature1();
+	vector<string>* displayLines();
+	void chooseLine(int option, vector<string>* LinePrefixes);
 	bool displayStations(string prefix);
 
 	// Feature 2: Display Station Info.
+	void feature2();
 	bool displayStationInfo();
 
 	// Feature 3: Add New Station
+	void feature3();
 	bool addNewStation();
 
 	// Feature 4: Add New Line

@@ -13,12 +13,13 @@ Graph::~Graph()
 	delete this;
 }
 
+
+#pragma region General Functions
 Graph::Node* Graph::getNode(KeyType key)
 {
 	return List[Hash(key, MAX_SIZE)];
 }
 
-#pragma region General Functions
 // Add new Station into hash table
 bool Graph::add(KeyType key, ItemType* item)
 {
@@ -203,53 +204,70 @@ bool Graph::findPrefixInRoutes(string prefix, vector<string>& retStationIDs, vec
 #pragma endregion
 
 #pragma region Feature 1: Display Lines.
-bool Graph::displayLines()
+void Graph::feature1()
 {
-	vector<string>* FileLines = Stations->getLines();
-	if (FileLines != NULL)
+	cout << "Select a line to display" << endl;
+	coutEqual();
+	vector<string>* LinePrefixes = displayLines();
+	coutEqual();
+
+	if (LinePrefixes != NULL)
 	{
-		vector<string> LinePrefixes;
-		for (int i = 0; i < FileLines->size(); i++)
-		{
-			string CurrentStr = FileLines->at(i);
-			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
-
-			if (LinePrefixes.empty())
-				LinePrefixes.push_back(CurrentPrefix);
-			else
-			{
-				for (int i = 0; i < LinePrefixes.size(); i++)
-				{
-					if (!isInVec(LinePrefixes, CurrentPrefix))
-						LinePrefixes.push_back(CurrentPrefix);
-				}
-			}
-		}
-
-		cout << "Select a line to display" << endl;
-		coutEqual();
-		for (int i = 0; i < LinePrefixes.size(); i++)
-		{
-			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
-		}
-		coutEqual();
-
 		int option;
 		cout << "Line: ";
 		cin >> option;
 		cout << endl;
 
-		// If within rage of LinePrefixes vector
-		if (!(option < 1 || option > LinePrefixes.size()))
+		chooseLine(option, LinePrefixes);
+		return;
+	}
+	coutEqual();
+	cout << "Error displaying lines..." << endl;
+	coutEqual();
+}
+
+vector<string>* Graph::displayLines()
+{
+	vector<string>* FileLines = Stations->getLines();
+	vector<string>* LinePrefixes = new vector<string>();
+	if (FileLines != NULL)
+	{
+		for (int i = 0; i < FileLines->size(); i++)
 		{
-			if(displayStations(LinePrefixes.at(option - 1)))
-				return true;
+			string CurrentStr = FileLines->at(i);
+			string CurrentPrefix = GetLine(Split(CurrentStr, DELIMITER)->at(0));
+
+			if (LinePrefixes->empty())
+				LinePrefixes->push_back(CurrentPrefix);
+			else
+			{
+				for (int i = 0; i < LinePrefixes->size(); i++)
+				{
+					if (!isInVec(*LinePrefixes, CurrentPrefix))
+						LinePrefixes->push_back(CurrentPrefix);
+				}
+			}
 		}
+		
+		for (int i = 0; i < LinePrefixes->size(); i++)
+		{
+			cout << i + 1 << " " << LinePrefixes->at(i) << endl;
+		}
+	}
+	return LinePrefixes;
+}
+
+void Graph::chooseLine(int option, vector<string>* LinePrefixes)
+{
+	// If within rage of LinePrefixes vector
+	if (!(option < 1 || option > LinePrefixes->size()))
+	{
+		if (displayStations(LinePrefixes->at(option - 1)))
+			return;
 	}
 	coutEqual();
 	cout << "Unknown option..." << endl;
 	coutEqual();
-	return false;
 }
 
 bool Graph::displayStations(string prefix)
@@ -262,34 +280,18 @@ bool Graph::displayStations(string prefix)
 				Display information of that Station.
 	*/
 
-
 	vector<string> StationIDs/*, Distances*/;
 	if (findPrefixInRoutes(prefix, StationIDs/*, Distances*/))
 	{
 		cout << "Stations under " << prefix << " line:" << endl;
 		coutEqual();
-		cout << "ID" << "\t" << "Name" /*<< "\t\t" << "Dist to Next(m)"*/ << endl;
+		cout << "ID" << "\t" << "Name" << endl;
 		for (int i = 0; i < StationIDs.size(); i++)
 		{
 			string StationName = findStationName(StationIDs.at(i));
 			if (StationName != "")
 			{
-				//if (i == Distances.size())
-				//{
-				//	if (StationName.size() < 8)
-				//	{
-				//		cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << endl;
-				//		continue;
-				//	}
-				//	cout << StationIDs.at(i) << "\t" << StationName << "\t" << endl;
-				//	continue;
-				//}
-				//if (StationName.size() < 8)
-				//{
-				//	cout << StationIDs.at(i) << "\t" << StationName << "\t\t" << Distances.at(i) << endl;
-				//	continue;
-				//}
-				cout << StationIDs.at(i) << "\t" << StationName/* << "\t" << Distances.at(i)*/ << endl;
+				cout << StationIDs.at(i) << "\t" << StationName << endl;
 			}
 		}
 		coutEqual();
@@ -330,7 +332,7 @@ bool Graph::displayStationInfo()
 				cout << CurrentStation->getStationID() << "\t" << CurrentStation->getStationName() << endl;
 				cout << "Connections: " << endl;
 
-				vector<string> Connections = *CurrentStation->getConnections();
+				vector<string> Connections/* = *CurrentStation->getConnections();*/;
 
 				vector<string> StationIDs, Distances;
 				if (findPrefixInRoutes(GetLine(CurrentStation->getStationID()), StationIDs, Distances))
@@ -503,6 +505,7 @@ bool Graph::setupStations()
 	return false;
 }
 
+// Search for target station ID using recursive binary search
 int Graph::RoutesBinary(vector<string> vec, int first, int last, int target)
 {
 	if (first <= last)
@@ -589,6 +592,7 @@ bool Graph::setupConnections(Station* station)
 									station->NextStation = node->Station;
 								break;
 							}
+							node = node->Next;
 						}
 					}
 					return true;

@@ -53,6 +53,7 @@ int main()
 
         case 3:
             graph->addNewStation();
+            //graph->setupStations();
             continue;
 
         default:

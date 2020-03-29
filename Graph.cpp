@@ -503,7 +503,7 @@ bool Graph::setupStations()
 	return false;
 }
 
-int RoutesBinary(vector<string> vec, int first, int last, int target)
+int Graph::RoutesBinary(vector<string> vec, int first, int last, int target)
 {
 	if (first <= last)
 	{
@@ -575,7 +575,7 @@ bool Graph::setupConnections(Station* station)
 						//if (!isInVec(*station->getConnections(), ConnectionIDs.at(j))) // Pls change this. Find the root of why its looping more times the longer the chain
 						//	station->getConnections()->push_back(ConnectionIDs.at(j));
 
-						Node* node = getNode(findStationName(GetNum(ConnectionIDs.at(i))));
+						Node* node = getNode(findStationName(ConnectionIDs.at(i)));
 						while (node != NULL)
 						{
 							if (node->Station->getStationID() == ConnectionIDs.at(i))

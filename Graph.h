@@ -75,5 +75,8 @@ public:
 	void initFiles();
 	bool setupStations();
 	bool setupConnections(Station* station/*, string StationID, string StationName*/);
+
+	int RoutesBinary(vector<string> vec, int first, int last, int target);
+
 };
 

@@ -64,7 +64,7 @@ public:
 
 	// Feature 2: Display Station Info.
 	void feature2();
-	bool displayStationInfo();
+	bool displayStationInfo(string StationName);
 
 	// Feature 3: Add New Station
 	void feature3();

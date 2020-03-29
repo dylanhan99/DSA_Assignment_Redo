@@ -302,25 +302,35 @@ bool Graph::displayStations(string prefix)
 #pragma endregion
 
 #pragma region Feature 2: Display Station Info.
-// note to self: display the distances to and from each connection. If it is before, display Connection's distance. 
-// if it is after, display the station's distnace
-bool Graph::displayStationInfo()
+void Graph::feature2()
 {
 	string StationName;
 	cout << "Enter a station name" << endl;
-	cout << "=============================" << endl;
+	coutEqual();
 	cout << "Name: ";
 	cin >> StationName;
-	cout << "=============================" << endl;
+	coutEqual();
 	cout << endl;
 	StationName = trim(StationName);
+
+	if (!displayStationInfo(StationName))
+	{
+		coutEqual();
+		cout << "No such station: " << StationName << endl;
+		coutEqual();
+	}
+}
+// note to self: display the distances to and from each connection. If it is before, display Connection's distance. 
+// if it is after, display the station's distnace
+bool Graph::displayStationInfo(string StationName)
+{
 	int index = Hash(StationName, MAX_SIZE);
 
 	Node* CurrentNode = List[index];
 	if (isExist(StationName))
 	{
 		cout << StationName << " Station Info:" << endl;
-		cout << "=============================" << endl;
+		coutEqual();
 		if (isInterchange(StationName))
 			cout << StationName << " is an interchange." << endl;
 		while (CurrentNode != NULL)
@@ -332,55 +342,21 @@ bool Graph::displayStationInfo()
 				cout << CurrentStation->getStationID() << "\t" << CurrentStation->getStationName() << endl;
 				cout << "Connections: " << endl;
 
-				vector<string> Connections/* = *CurrentStation->getConnections();*/;
+				if (CurrentStation->PreviousStation != NULL)
+					cout << CurrentStation->PreviousStation->getStationID() << "\t"
+						 << CurrentStation->PreviousStation->getStationName() << "\t"
+						 << CurrentStation->PreviousStation->getDistToNext() << endl;
 
-				vector<string> StationIDs, Distances;
-				if (findPrefixInRoutes(GetLine(CurrentStation->getStationID()), StationIDs, Distances))
-				{
-					for (int i = 0; i < Connections.size(); i++)
-					{
-						for (int j = 0; j < StationIDs.size(); j++)
-						{
-							// isBefore checks the position of CurrentStation's StationID. 
-							// isBefore as in CurrentStation isBefore this one im checking now.
-							// If CurrentStation's StationID comes after the StationID in <vec>StationIDs,
-							//		isBefore will remain false, and will cout the distance of StationID in <vec>StationIDs.
-							// Else
-							//		will cout the distance of CurrentStation
-							bool isBefore = false;
-							if (StationIDs.at(j) == CurrentStation->getStationID())
-								isBefore = true;
-							if (StationIDs.at(j) == Connections.at(i))
-							{
-								// !isBefore - the station ID is lower than CurrentStationID, cout distance of StationID in <vec>StationIDs
-								if (!isBefore)
-								{
-									if (j >= Distances.size() - 1)
-									{
-										cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << "-" << endl;
-										break;
-									}
-									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j) << endl;
-								}
-								else
-									cout << Connections.at(i) << "\t" << findStationName(Connections.at(i)) << "\t" << Distances.at(j - 1) << endl;
-							}
-						}
-						if (i + 1 >= Connections.size())
-							cout << endl;
-						//if (i < Connections.size())
-						//	cout << "____________________________\n";
-					}
-				}
+				if (CurrentStation->NextStation != NULL)
+					cout << CurrentStation->NextStation->getStationID() << "\t"
+						 << CurrentStation->NextStation->getStationName() << "\t"
+						 << CurrentStation->getDistToNext() << endl;
 			}
 			CurrentNode = CurrentNode->Next;
 		}
 		cout << "=============================" << endl;
 		return true;
 	}
-	cout << "=============================" << endl;
-	cout << "No such station: " << StationName << endl;
-	cout << "=============================" << endl;
 	return false;
 }
 #pragma endregion

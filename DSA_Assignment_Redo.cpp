@@ -48,11 +48,11 @@ int main()
             continue;
 
         case 2:
-            graph->displayStationInfo();
+            graph->feature2();
             continue;
 
         case 3:
-            graph->addNewStation();
+            //graph->feature3();
             //graph->setupStations();
             continue;
 

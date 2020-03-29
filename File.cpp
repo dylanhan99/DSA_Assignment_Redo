@@ -31,7 +31,6 @@ bool File::isFileExist(fstream& file)
 
 
 #pragma region General Functions
-
 // Read each line of file and 
 vector<string>* File::getLines()
 {

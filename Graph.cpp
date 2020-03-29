@@ -354,7 +354,7 @@ bool Graph::displayStationInfo(string StationName)
 			}
 			CurrentNode = CurrentNode->Next;
 		}
-		cout << "=============================" << endl;
+		coutEqual();
 		return true;
 	}
 	return false;
@@ -386,12 +386,12 @@ bool Graph::addNewStation()
 		}
 
 		cout << "Select a line to add to" << endl;
-		cout << "=============================" << endl;
+		coutEqual();
 		for (int i = 0; i < LinePrefixes.size(); i++)
 		{
 			cout << i + 1 << " " << LinePrefixes.at(i) << endl;
 		}
-		cout << "=============================" << endl;
+		coutEqual();
 
 		int option;
 		cout << "Line: ";
@@ -407,9 +407,9 @@ bool Graph::addNewStation()
 				return true;
 			}
 		}
-		cout << "=============================" << endl;
+		coutEqual();
 		cout << "Unknown option" << endl;
-		cout << "=============================" << endl;
+		coutEqual();
 	}
 	return false;
 }
@@ -447,24 +447,13 @@ bool Graph::setupStations()
 			if (findPrefixInRoutes(GetLine(CurrentStr.front()), StationIDs, Distances))
 			{
 				// Loop through the Station IDs to find the Distance
-				for (int j = 0; j < StationIDs.size(); j++)
-				{
-					//if (j == Distances.size())
-					//{
-					int Dist = 0;
-					if (j < Distances.size())
-						Dist = stoi(Distances.at(j));
+				int index = RoutesBinary(StationIDs, 0, StationIDs.size() - 1, stoi(GetNum(CurrentStr.front())));
+				int Dist = 0;
+				if (index < Distances.size() - 1)
+					Dist = stoi(Distances.at(index));
 
-					newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
-					this->add(CurrentStr.back(), newStation);
-
-					break;
-					//}
-				}
-
-				// Once interchanges is done, setup connections.
-				//setupConnections("test");
-				//function should be claled after ALL station objects have been created
+				newStation = new Station(CurrentStr.back(), CurrentStr.front(), Dist);
+				this->add(CurrentStr.back(), newStation);
 			}
 		}
 		for (int i = 0; i < MAX_SIZE; i++)

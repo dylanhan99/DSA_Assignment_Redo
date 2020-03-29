@@ -402,10 +402,7 @@ bool Graph::addNewStation()
 		if (!(option < 1 || option > LinePrefixes.size()))
 		{
 			if (displayStations(LinePrefixes.at(option - 1)))
-			{
-
 				return true;
-			}
 		}
 		coutEqual();
 		cout << "Unknown option" << endl;

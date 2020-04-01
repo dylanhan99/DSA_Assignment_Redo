@@ -412,7 +412,7 @@ void Graph::feature3()
 				if (IDno >= 0 && IDno <= stoi(GetNum(StationIDs.back())))
 				{
 					// ask for distance
-					cout << "Distance: ";
+					cout << "Distance to next: ";
 					cin >> Distance;
 					cout << endl;
 
@@ -421,6 +421,10 @@ void Graph::feature3()
 				}
 				else if (IDno > stoi(GetNum(StationIDs.back())))
 				{
+					cout << "Distance from last: ";
+					cin >> Distance;
+					cout << endl;
+
 					Station* newStation = new Station(StationName, StationID, Distance);
 					addNewStation_Last(newStation);
 				}

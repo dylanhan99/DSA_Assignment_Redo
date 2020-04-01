@@ -92,6 +92,19 @@ bool Graph::isExist(KeyType key)
 	return false;
 }
 
+bool Graph::isExistOnLine(KeyType key, string prefix)
+{
+	int index = Hash(key, MAX_SIZE);
+	Node* CurrentNode = List[index];
+	while (CurrentNode != NULL)
+	{
+		if (CurrentNode->Key == key && GetLine(CurrentNode->Station->getStationID()) == prefix)
+			return true;
+		CurrentNode = CurrentNode->Next;
+	}
+	return false;
+}
+
 bool Graph::isInterchange(string StationName)
 {
 	int index = Hash(StationName, MAX_SIZE);
@@ -375,8 +388,48 @@ void Graph::feature3()
 		// If within rage of LinePrefixes vector
 		if (!(option < 1 || option > LinePrefixes->size()))
 		{
-			if (displayStations(LinePrefixes->at(option - 1)))
+			//if (displayStations(LinePrefixes->at(option - 1)))
+			//	return;
+			string StationID, StationName;
+			cout << "Enter new station info" << endl;
+			coutEqual();
+			cout << "StationID: ";
+			cin >> StationID;
+			cout << endl;
+			
+			cout << "Station Name: ";
+			cin >> StationName;
+			cout << endl;
+
+			// Check if exist alr or not
+			if (!isExistOnLine(StationName, LinePrefixes->at(option - 1)))
+			{
+				vector<string> StationIDs;
+				findPrefixInRoutes(LinePrefixes->at(option - 1), StationIDs);
+				int IDno = stoi(GetNum(StationID));
+				int Distance = 0;
+				// RoutesBinary(StationIDs, 0, StationIDs.size() - 1, stoi(GetNum(StationID)))
+				if (IDno >= 0 && IDno <= stoi(GetNum(StationIDs.back())))
+				{
+					// ask for distance
+					cout << "Distance: ";
+					cin >> Distance;
+					cout << endl;
+
+					Station* newStation = new Station(StationName, StationID, Distance);
+					addNewStation_Choose(newStation);
+				}
+				else if (IDno > stoi(GetNum(StationIDs.back())))
+				{
+					Station* newStation = new Station(StationName, StationID, Distance);
+					addNewStation_Last(newStation);
+				}
 				return;
+			}
+			coutEqual();
+			cout << StationName << " already exists on line " << LinePrefixes->at(option - 1) << endl;
+			coutEqual();
+			return;
 		}
 		coutEqual();
 		cout << "Unknown option..." << endl;
@@ -390,22 +443,65 @@ void Graph::feature3()
 
 bool Graph::addNewStation_Choose(ItemType* station)
 {
-	vector<string> StationIDs;
-	if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
-	{
-		// Dosnt exist yet
-		if (RoutesBinary(StationIDs, 0, StationIDs.size() - 1, stoi(GetNum(station->getStationID()))) <= -1)
-		{
-			// add
-			return true;
-		}
-	}
-	delete(station);
+	cout << "Choose station!";
+	//vector<string> StationIDs;
+	//if (findPrefixInRoutes(GetLine(station->getStationID()), StationIDs))
+	//{
+	//	// Dosnt exist yet
+	//	if (RoutesBinary(StationIDs, 0, StationIDs.size() - 1, stoi(GetNum(station->getStationID()))) <= -1)
+	//	{
+	//		// add
+	//		return true;
+	//	}
+	//}
+	//delete(station);
 	return false;
 }
 
 bool Graph::addNewStation_Last(ItemType* station)
 {
+	cout << "Last station!";
+
+	string Prefix = GetLine(station->getStationID());
+	vector<string> StationIDs;
+	if (findPrefixInRoutes(Prefix, StationIDs))
+	{
+		vector<string> StationLines = *Stations->getLines();
+		int indexinStationLines = -1;
+		for (int i = 0; i < StationLines.size(); i++)
+		{
+			string CurrentStr = StationLines.at(i);
+			if (GetLine(Split(CurrentStr, DELIMITER)->front()) == Prefix)
+			{
+				indexinStationLines = i;
+				break;
+			}
+		}
+		if (indexinStationLines >= 0) 
+		{
+			StationIDs.push_back(station->getStationID());
+			string s1 = "";
+			for (int i = 0; i < StationIDs.size(); i++)
+			{
+				s1 += StationIDs.at(i);
+				if (i < StationIDs.size() - 1)
+					s1 += ",";
+			}
+			string s2 = station->getStationID() + "," + station->getStationName();
+
+			vector<string> RoutesLines = *Routes->getLines();
+			for (int i = 0; i < RoutesLines.size(); i++)
+			{
+				if (GetLine(RoutesLines.at(i)) == GetLine(station->getStationID()))
+				{
+					Routes->replaceLine(s1, i);
+					Stations->writeFile(s2, indexinStationLines + StationIDs.size() - 1);
+				}
+			}
+			return true;
+		}
+	}
+
 	return false;
 }
 #pragma endregion

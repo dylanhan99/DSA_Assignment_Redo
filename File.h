@@ -28,5 +28,8 @@ public:
 
 	// Write line to specific index in file
 	bool writeFile(string line, int index);
+
+	// 
+	bool replaceLine(string line, int index);;
 };
 

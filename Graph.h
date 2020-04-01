@@ -50,6 +50,7 @@ public:
 	bool search(KeyType key);
 	bool isEmpty();
 	bool isExist(KeyType key);
+	bool isExistOnLine(KeyType key, string prefix);
 	bool isInterchange(string StationID);
 	//string findStationID(string StationName);
 	string findStationName(string StationID);

@@ -86,3 +86,19 @@ bool File::writeFile(string line, int index)
 	}
 	return false;
 }
+
+bool File::replaceLine(string line, int index)
+{
+	fstream file(path);
+	if (isFileExist(file))
+	{
+		vector<string> newData = *getLines();
+		newData.at(index) = line;
+
+		for (int i = 0; i < newData.size(); i++)
+			file << newData.at(i) << endl;
+
+		return true;
+	}
+	return false;
+}

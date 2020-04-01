@@ -1,2 +1,8 @@
 ﻿  DSA_Assignment_Redo.cpp
+  File.cpp
+  Graph.cpp
+F:\GitHub\DSA_Assignment_Redo\DSA_Assignment_Redo\Graph.cpp(498,73): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+F:\GitHub\DSA_Assignment_Redo\DSA_Assignment_Redo\Graph.cpp(541,100): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+F:\GitHub\DSA_Assignment_Redo\DSA_Assignment_Redo\Graph.cpp(597,48): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
   DSA_Assignment_Redo.vcxproj -> F:\GitHub\DSA_Assignment_Redo\x64\Debug\DSA_Assignment_Redo.exe
